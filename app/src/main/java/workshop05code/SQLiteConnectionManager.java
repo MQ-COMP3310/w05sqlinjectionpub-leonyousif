@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 public class SQLiteConnectionManager {
     //Start code logging exercise
     static {
@@ -127,10 +129,14 @@ public class SQLiteConnectionManager {
      */
     public void addValidWord(int id, String word) {
 
-        String sql = "INSERT INTO validWords(id,word) VALUES('" + id + "','" + word + "')";
+        String sql = "INSERT INTO validWords(id,word) VALUES( ? , ? )";
 
         try (Connection conn = DriverManager.getConnection(databaseURL);
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setInt(1, id);
+                    pstmt.setString(2, word);
+                    
+                    
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
